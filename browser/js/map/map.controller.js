@@ -1,79 +1,43 @@
 'use strict'
 
-app.controller('MapCtrl', function($scope, $log){
+
+app.controller('MapCtrl', function($scope, MapFactory, $rootScope){
 
   const socket = io(window.location.origin);
-  var map;
 
-  $scope.distanceTravelled = '0';
+  var startLatLng;
 
-  var metersTravelled = 0;
+  const currentLocation = {city: null, state: null};
+  const distanceTravelled = {miles: 0, time: 0};
+  $rootScope.distanceTravelled = distanceTravelled;
 
-  navigator.geolocation.getCurrentPosition(function(pos){
+  var map = MapFactory.initMap({lat: -34.397, lng: 150.644}, 10);
 
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: pos.coords.latitude, lng: pos.coords.longitude},
-        zoom: 10,
-        minZoom: 10,
-        disableDefaultUI: false,
-        styles: [
-          {
-            featureType: 'all',
-            stylers: [
-              {visibility: 'off'}
-            ]
-          },
-          {
-            featureType: 'landscape',
-            stylers: [
-              {visibility: 'simplified'}
-            ]
-          },
-          {
-            featureType: 'water',
-            stylers: [
-              {visibility: 'on'}
-            ]
-          },
-          {
-            featureType: 'road.highway',
-            stylers: [
-              {visibility: 'simplified'},
-            ]
-          },
-          {
-            featureType: 'administrative.locality',
-            stylers: [
-              {visibility: 'simplified'},
-              {clickable: true}
-            ]
-          }
-        ]
-      });
-
-      map.addListener('click', function(e){
-        socket.emit('destinationSelect', {origin: map.center, destination: e.latLng});
-      });
+  map.addListener('click', function(e){
+    let coords = e.latLng;
+    socket.emit('getLocationDetails', coords);
+    socket.emit('getDistance', {origin: map.center, destination: coords});
   });
 
-  socket.on('connect', function(){
-    console.log('socket connection opened');
+  socket.on('locationData', function(data){
+    map.panTo(data.latLng);
+    MapFactory.drawMarker(data.latLng);
+
+    currentLocation.city = data.city;
+    currentLocation.state = data.state;
+    $scope.$digest;
   });
 
-  socket.on('destinationData', function(data){
-    console.log(data);
-    if (data) {
-      console.log(data.distance.distance.value);
-      map.panTo(data.destination.geometry.location);
-      new google.maps.Marker({
-            position: data.destination.geometry.location,
-            map: map
-          });
-      $scope.currentLocation = data.destination.address_components[0].short_name + ' ' + data.destination.address_components[2].short_name;
-      metersTravelled += data.distance.distance.value;
-      $scope.distanceTravelled = Math.floor(metersTravelled/1609);
-      $scope.$digest();
-    }
+  socket.on('distanceData', function(data){
+    var distance = data.distance;
+    var duration = data.duration;
 
+    distanceTravelled.miles += Math.floor(distance.value/1609.34);
+    console.log(distanceTravelled.miles);
+    distanceTravelled.time = duration.value;
+    $scope.$digest;
+    $rootScope.$digest;
   });
+
+
 });

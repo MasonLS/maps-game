@@ -14,15 +14,16 @@
     <script src="angular-ui-router/release/angular-ui-router.min.js" defer></script>
     <script src="js/app.js" defer></script>
     <script src="js/map/map.controller.js" defer></script>
+    <script src="js/map/map.factory.js" defer></script>
     <!-- <script src="js/map.js" defer></script> -->
   </head>
-  <body ng-app="app" ng-controller="MapCtrl">
+  <body ng-app="app">
     <nav class="navbar navbar-default navbar-fixed-bottom">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xs-4"><p>Current Location: {{currentLocation}}</p></div>
-          <div class="col-xs-4"><p>Road Trip Goal: {{goal}}</p></div>
-          <div class="col-xs-4"><p>Distance Travelled: {{distanceTravelled}} miles</p></div>
+          <div class="col-xs-4"><p>Current Location: </p></div>
+          <div class="col-xs-4"><p>Road Trip Goal: </p></div>
+          <div class="col-xs-4"><p>Distance Travelled: {{distanceTravelled.miles}} miles</p></div>
         </div>
       </div>
     </nav>

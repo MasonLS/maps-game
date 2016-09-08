@@ -1,12 +1,10 @@
 'use strict';
 
 app.factory('MapFactory', function(){
-  const socket = io(window.location.origin);
-
-  var map;
 
   function initMap (center, zoom) {
-    map = new google.maps.Map({
+    console.log(document);
+    var map = new google.maps.Map(document.getElementById('map'), {
       center: center,
       zoom: zoom,
       scrollwheel: false,
@@ -45,6 +43,8 @@ app.factory('MapFactory', function(){
         }
       ]
     });
+
+    return map;
   }
 
   function drawMarker (position) {
@@ -54,14 +54,9 @@ app.factory('MapFactory', function(){
           });
   }
 
-  function panTo (latLng) {
-    map.panTo(latLng);
-  }
 
   return {
     initMap: initMap,
-    drawMarker: drawMarker,
-    panTo: panTo
-
+    drawMarker: drawMarker
   }
 });

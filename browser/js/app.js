@@ -6,7 +6,7 @@ app.config(function($stateProvider){
   $stateProvider.state('mapState', {
     url: '/map',
     templateUrl: 'js/map/map.html',
-    // controller: 'MapCtrl',
+    controller: 'MapCtrl',
     // resolve: {
     //   userLocation: function(){
     //     const getCurrentPosition = Promise.promisify(navigator.geolocation.getCurrentPosition);
