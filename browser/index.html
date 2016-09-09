@@ -7,26 +7,28 @@
     <link href="css/stylesheet.css" rel="stylesheet">
     <script src="jquery/dist/jquery.min.js" defer></script>
     <script src="bootstrap/dist/js/bootstrap.min.js" defer></script>
-    <script src="socket.io/socket.io.js" defer></script>
     <script src="bluebird/js/browser/bluebird.min.js" defer></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIFHXbn8wsRS3oJ4K9NIqDcQf0snXcsD0&libraries=places" defer></script>
     <script src="angular/angular.min.js" defer></script>
     <script src="angular-ui-router/release/angular-ui-router.min.js" defer></script>
     <script src="js/app.js" defer></script>
-    <script src="js/map/map.controller.js" defer></script>
     <script src="js/map/map.factory.js" defer></script>
-    <!-- <script src="js/map.js" defer></script> -->
+    <script src="js/main.controller.js" defer></script>
   </head>
-  <body ng-app="app">
+  <body ng-app="app" ui-view>
     <nav class="navbar navbar-default navbar-fixed-bottom">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-xs-4"><p>Current Location: </p></div>
+          <div class="col-xs-4"><p>Current Location: {{currentLocation.city}}, {{currentLocation.state}}</p></div>
           <div class="col-xs-4"><p>Road Trip Goal: </p></div>
           <div class="col-xs-4"><p>Distance Travelled: {{distanceTravelled.miles}} miles</p></div>
         </div>
       </div>
     </nav>
-    <ui-view></ui-view>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12" id="map"></div>
+      </div>
+    </div>
   </body>
 </html>

@@ -1,13 +1,13 @@
-'use strict'
+'use strict';
 
+app.controller('MainCtrl', function($scope, MapsFactory, $log, userLatLng){
 
-app.controller('MainCtrl', function($scope, MapsFactory, $log){
-
-  const map = MapsFactory.initMap({lat: -34.397, lng: 150.644}, 10);
-
-  let currentLocation = {city: null, state: null, latLng: {lat: -34.397, lng: 150.644}};
-  let currentLocationMarker = MapsFactory.drawMarker(currentLocation.latLng, map);
+  let currentLocation = {city: null, state: null, latLng: userLatLng};
   let distanceTravelled = {miles: 0, time: 0};
+
+  const map = MapsFactory.initMap(userLatLng, 10);
+
+  let currentLocationMarker = MapsFactory.drawMarker(userLatLng, map);
 
   map.addListener('click', function(event){
     let coords = event.latLng;
@@ -19,6 +19,8 @@ app.controller('MainCtrl', function($scope, MapsFactory, $log){
         return MapsFactory.getDistanceDetails(origin, locationDetails.latLng);
       })
       .then(distanceDetails => {
+        currentLocationMarker.setMap(null);
+        map.panTo(coords);
         currentLocationMarker = MapsFactory.drawMarker(currentLocation.latLng, map);
 
         distanceTravelled.miles += Math.floor(distanceDetails.distance.value/1609.34);
@@ -26,10 +28,6 @@ app.controller('MainCtrl', function($scope, MapsFactory, $log){
         $scope.distanceTravelled = distanceTravelled;
       })
       .catch($log.error);
-
-      currentLocationMarker.setMap(null);
-      map.panTo(coords);
   });
-
 
 });
